@@ -1,5 +1,5 @@
 DASHBOARD MONITORING HARGA EMAS + PROXY LOKAL GALERI 24
-Repo: https://github.com/arbilaksmana/dashboard-pegadaian
+Repo: https://github.com/elyasareva/pg_main
 
 ISI REPO
 - dashboard_sinkronisasi_galeri24.html : dashboard simulasi + kalkulator cicilan
@@ -15,7 +15,7 @@ Satu-satunya prasyarat: Node.js versi 18 atau lebih baru (https://nodejs.org/).
 Cek dengan: node -v
 
 Langkah 1 - ambil kode (pilih salah satu):
-  a. Tanpa Git: buka https://github.com/arbilaksmana/dashboard-pegadaian
+  a. Tanpa Git: buka https://github.com/elyasareva/pg_main
      > tombol hijau "Code" > "Download ZIP" > ekstrak ke folder yang mudah ditemukan.
   b. Dengan Git: git clone https://github.com/arbilaksmana/dashboard-pegadaian.git
      (folder node_modules TIDAK ikut di repo, jadi wajib jalankan langkah 2)
