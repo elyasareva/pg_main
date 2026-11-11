@@ -7,7 +7,7 @@ ISI REPO
 - package.json / package-lock.json : dependensi Node.js
 
 PENTING TENTANG SUMBER DATA
-Proxy mengambil halaman publik https://galeri24.co.id/harga-emas dan membaca harga jual 1 gram dari tabel halaman tersebut. Ini bukan API resmi Galeri 24; ini proxy/scraper atas halaman resmi. Jika Galeri 24 mengubah struktur halaman atau memblokir akses otomatis, parsing dapat gagal. Dashboard akan menampilkan status gagal dan mempertahankan harga sebelumnya, bukan mengarang harga baru.
+Proxy mengambil halaman publik https://galeri24.co.id/harga-emas dan membaca seluruh daftar gramasi beserta harga jual resmi per vendor (Galeri 24, Antam, UBS, dan Lotus Archi) dari tabel halaman tersebut. Ini bukan API resmi Galeri 24; ini proxy/scraper atas halaman resmi. Jika Galeri 24 mengubah struktur halaman atau memblokir akses otomatis, parsing dapat gagal. Dashboard akan menampilkan status gagal dan mempertahankan data terakhir per vendor, bukan mengarang harga baru.
 
 CARA MENJALANKAN DI KOMPUTER SENDIRI (Windows / macOS)
 
@@ -62,6 +62,14 @@ Buka http://127.0.0.1:8787/api/gold-prices?refresh=true untuk memaksa mengambil 
 CATATAN
 - Harga di halaman resmi dapat berubah sewaktu-waktu; interval 5 menit hanya interval pemeriksaan dashboard, bukan jaminan harga sumber berubah setiap 5 menit.
 - Halaman resmi menyebut harga yang berlaku adalah harga pada sistem Galeri 24. Verifikasi ulang sebelum dipakai sebagai penawaran resmi.
-- Harga Antam/UBS/Lotus hanya akan terisi bila merek dan tabelnya ditemukan pada halaman resmi; jika tidak, dashboard mempertahankan nilai terakhir untuk merek tersebut.
-- Proxy menyimpan harga terakhir selama 5 menit; jika pengambilan ulang gagal, proxy tetap mengirim harga terakhir dengan penanda `stale: true` alih-alih mengarang harga baru.
+- Daftar gramasi dan Harga Dasar tiap vendor (Galeri 24, Antam, UBS, Lotus Archi) mengikuti baris valid pada halaman resmi; kartu atas menampilkan patokan 1 gram (atau pecahan terkecil bila 1 gram tidak tersedia).
+- Proxy menyimpan cache per vendor selama 5 menit; jika pengambilan ulang gagal total atau sebagian vendor hilang dari sumber, proxy mempertahankan data terakhir untuk vendor tersebut dengan penanda `stale: true` alih-alih mengarang harga baru.
+- Lihat `GLOSSARY.md` untuk definisi istilah domain pada dashboard ini.
 - Perhitungan cicilan pada dashboard tetap simulasi dan bukan penawaran pembiayaan resmi.
+
+DEPLOY DOCKER / PAAS (Railway, Render, Coolify, Dokploy, VPS Docker)
+- Build image: `docker build -t pg-galeri24 .`
+- Jalankan: `docker run -d -p 8787:8787 --name pg-galeri24 pg-galeri24`
+- Variabel env opsional: `PORT` (default `8787`), `HOST` (default `0.0.0.0`).
+- Healthcheck endpoint: `GET /health` (sudah terkonfigurasi di `Dockerfile` HEALTHCHECK).
+- Proxy menggunakan in-memory cache per vendor; cukup 1 instance agar cache konsisten dan tidak membebani situs sumber.

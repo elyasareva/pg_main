@@ -66,7 +66,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded tracking-wide uppercase">PT PEGADAIAN</span>
                     </div>
-                    <h1 class="text-xl font-extrabold tracking-tight text-white mt-0.5">Pegadaian Kanwil X Bandung</h1>
+                    <h1 class="text-xl font-extrabold tracking-tight text-white mt-0.5">PT Pegadaian (Persero) Kanwil X Bandung</h1>
                     <p class="text-xs text-amber-300 font-medium">Monitoring Harga Emas Real-Time & Kalkulator Simulasi Cicilan</p>
                 </div>
             </div>
@@ -98,7 +98,7 @@
                     <div class="flex items-center justify-between gap-2">
                         <div>
                             <h3 class="text-xl font-black text-slate-900" id="price-galeri24">Memuat...</h3>
-                            <span class="text-[11px] text-slate-500">per gram</span>
+                            <span id="unit-galeri24" class="text-[11px] text-slate-500">per gram</span>
                         </div>
                         <img src="galeri 24 pegadaian.jpeg" alt="Logo Galeri 24" class="h-12 max-w-[80px] w-auto object-contain flex-shrink-0">
                     </div>
@@ -110,7 +110,7 @@
                     <div class="flex items-center justify-between gap-2">
                         <div>
                             <h3 class="text-xl font-black text-slate-900" id="price-antam">Memuat...</h3>
-                            <span class="text-[11px] text-slate-500">per gram</span>
+                            <span id="unit-antam" class="text-[11px] text-slate-500">per gram</span>
                         </div>
                         <img src="logo antam lm.png" alt="Logo Antam" class="h-12 max-w-[80px] w-auto object-contain flex-shrink-0">
                     </div>
@@ -122,7 +122,7 @@
                     <div class="flex items-center justify-between gap-2">
                         <div>
                             <h3 class="text-xl font-black text-slate-900" id="price-ubs">Memuat...</h3>
-                            <span class="text-[11px] text-slate-500">per gram</span>
+                            <span id="unit-ubs" class="text-[11px] text-slate-500">per gram</span>
                         </div>
                         <img src="ubs gold logo.jpeg" alt="Logo UBS Gold" class="h-12 max-w-[80px] w-auto object-contain flex-shrink-0">
                     </div>
@@ -134,7 +134,7 @@
                     <div class="flex items-center justify-between gap-2">
                         <div>
                             <h3 class="text-xl font-black text-slate-900" id="price-lotus">Memuat...</h3>
-                            <span class="text-[11px] text-slate-500">per gram</span>
+                            <span id="unit-lotus" class="text-[11px] text-slate-500">per gram</span>
                         </div>
                         <img src="Logo-Lotus-Archi-Merah-1.webp" alt="Logo Lotus Archi" class="h-12 max-w-[80px] w-auto object-contain flex-shrink-0">
                     </div>
@@ -183,16 +183,16 @@
                             <input type="checkbox" id="is-min-100g" onchange="toggleMin100Gram(this.checked)" class="mt-0.5 accent-emerald-700 h-4 w-4 rounded cursor-pointer">
                             <label for="is-min-100g" class="text-xs font-bold text-slate-900 cursor-pointer select-none">
                                 Pembelian Minimal 100 Gram
-                                <span class="block font-normal text-slate-600 text-[11px] mt-0.5 leading-tight">Centang untuk klaim suku bunga khusus (0,34% - 0,53%).</span>
+                                <span class="block font-normal text-slate-600 text-[11px] mt-0.5 leading-tight">Centang untuk klaim margin khusus (0,34% - 0,53%).</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Suku Bunga -->
+                    <!-- Margin -->
                     <div class="space-y-2">
                         <div class="flex justify-between items-center">
-                            <label class="text-xs font-bold text-slate-700">Suku Bunga (% / Bulan)</label>
-                            <span id="bunga-status-badge" class="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Bunga Standar</span>
+                            <label class="text-xs font-bold text-slate-700">Margin (% / Bulan)</label>
+                            <span id="bunga-status-badge" class="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Margin Standar</span>
                         </div>
                         <div class="grid grid-cols-4 gap-1.5">
                             <button type="button" onclick="setInterest(0.92)" class="interest-btn py-2 text-xs font-extrabold rounded-xl border border-emerald-600 bg-[#005a36] text-white shadow-sm transition-all cursor-pointer" data-val="0.92">0,92%</button>
@@ -242,7 +242,7 @@
                         <h2 class="text-sm font-bold text-slate-800">Tabel Gramasi & Matriks Cicilan</h2>
                         <p class="text-xs text-slate-500 mt-0.5">
                             Vendor: <span class="font-bold text-emerald-800 uppercase" id="lbl-vendor">GALERI 24</span> | 
-                            Bunga Aktif: <span class="font-bold text-amber-600" id="lbl-interest">0.92%</span>
+                            Margin Aktif: <span class="font-bold text-amber-600" id="lbl-interest">0.92%</span><span id="lbl-vendor-note" class="text-slate-400"></span>
                         </p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -323,19 +323,27 @@
 
     <!-- Logic Script -->
     <script>
-        let goldPrices = {
-            galeri24: 0,
-            antam: 0,
-            ubs: 0,
-            lotus: 0
+        const VENDOR_KEYS = ['galeri24', 'antam', 'ubs', 'lotus'];
+        const VENDOR_DISPLAY = {
+            galeri24: 'GALERI 24',
+            antam: 'ANTAM',
+            ubs: 'UBS GOLD',
+            lotus: 'LOTUS ARCHI'
+        };
+
+        let vendorCatalog = {
+            galeri24: { items: [], referenceWeight: null, referencePrice: 0, stale: false, fetchedAt: null },
+            antam: { items: [], referenceWeight: null, referencePrice: 0, stale: false, fetchedAt: null },
+            ubs: { items: [], referenceWeight: null, referencePrice: 0, stale: false, fetchedAt: null },
+            lotus: { items: [], referenceWeight: null, referencePrice: 0, stale: false, fetchedAt: null }
         };
 
         let currentActiveVendor = 'galeri24';
         let selectedInterest = 0.92;
         let selectedDpPercent = 20;
         let isMin100gChecked = false;
+        let hasAttemptedInitialSync = false;
 
-        const gramList = [0.5, 1, 2, 3, 5, 10, 25, 50, 100];
         const tenorList = [12, 18, 24, 30, 36];
 
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {
@@ -357,9 +365,26 @@
             }
         }
 
+        function validWeight(value) {
+            const number = Number(value);
+            return Number.isFinite(number) && number > 0 && number <= 100000;
+        }
+
         function validPrice(value) {
             const number = Number(value);
-            return Number.isFinite(number) && Number.isInteger(number) && number >= 500000 && number <= 10000000;
+            return Number.isFinite(number) && Number.isInteger(number) && number > 0 && number <= 50000000000;
+        }
+
+        function formatGram(weight) {
+            return Number(weight).toString() + 'g';
+        }
+
+        function getVendorDisplayName(vendorKey) {
+            return VENDOR_DISPLAY[vendorKey] || vendorKey.toUpperCase();
+        }
+
+        function getActiveInterestRate() {
+            return isMin100gChecked ? selectedInterest : 0.92;
         }
 
         async function fetchGaleri24Prices(manual = false) {
@@ -367,32 +392,63 @@
             priceFetchInProgress = true;
             setSyncStatus(manual ? 'Memeriksa harga terbaru...' : 'Menyinkronkan harga...', 'warning');
             try {
-                const response = await fetch(PRICE_API_URL + '?_=' + Date.now(), {
+                const query = manual ? '?refresh=true&_=' : '?_=';
+                const response = await fetch(PRICE_API_URL + query + Date.now(), {
                     method: 'GET',
                     cache: 'no-store',
                     headers: { 'Accept': 'application/json' }
                 });
                 if (!response.ok) throw new Error('Backend harga merespons HTTP ' + response.status);
                 const data = await response.json();
-                if (!data || !data.prices || typeof data.prices !== 'object') {
-                    throw new Error('Format data harga dari backend tidak sesuai');
+                if (!data || !data.vendors || typeof data.vendors !== 'object') {
+                    throw new Error('Format data gramasi dari backend tidak sesuai');
                 }
 
-                const updated = {};
-                for (const key of ['galeri24', 'antam', 'ubs', 'lotus']) {
-                    if (validPrice(data.prices[key])) updated[key] = Number(data.prices[key]);
+                for (const key of VENDOR_KEYS) {
+                    const incoming = data.vendors[key];
+                    if (incoming && Array.isArray(incoming.items)) {
+                        const cleanItems = incoming.items
+                            .filter(item => item && validWeight(item.weight) && validPrice(item.price))
+                            .map(item => ({ weight: Number(item.weight), price: Number(item.price) }))
+                            .sort((a, b) => a.weight - b.weight);
+
+                        if (cleanItems.length > 0) {
+                            const ref = cleanItems.find(item => item.weight === 1) || cleanItems[0];
+                            vendorCatalog[key] = {
+                                items: cleanItems,
+                                referenceWeight: validWeight(incoming.referenceWeight) ? Number(incoming.referenceWeight) : ref.weight,
+                                referencePrice: validPrice(incoming.referencePrice) ? Number(incoming.referencePrice) : ref.price,
+                                stale: Boolean(incoming.stale),
+                                fetchedAt: incoming.fetchedAt || data.fetchedAt || null
+                            };
+                        } else if (vendorCatalog[key].items.length > 0) {
+                            vendorCatalog[key] = { ...vendorCatalog[key], stale: true };
+                        }
+                    }
                 }
 
-                Object.assign(goldPrices, updated);
+                hasAttemptedInitialSync = true;
                 updatePriceCardsDisplay();
                 calculateTable();
                 lastSuccessfulPriceSync = new Date();
                 document.getElementById('price-updated-at').textContent =
                     lastSuccessfulPriceSync.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
-                
-                setSyncStatus('Harga berhasil disinkronkan secara real-time', 'success');
+
+                if (data.stale || (Array.isArray(data.missing) && data.missing.length > 0)) {
+                    setSyncStatus(data.warning || data.note || 'Sebagian vendor memakai data terakhir.', 'warning');
+                } else {
+                    setSyncStatus('Harga & gramasi berhasil disinkronkan per vendor', 'success');
+                }
             } catch (error) {
                 console.error('Sinkronisasi harga gagal:', error);
+                hasAttemptedInitialSync = true;
+                for (const key of VENDOR_KEYS) {
+                    if (vendorCatalog[key].items.length > 0) {
+                        vendorCatalog[key] = { ...vendorCatalog[key], stale: true };
+                    }
+                }
+                updatePriceCardsDisplay();
+                calculateTable();
                 setSyncStatus('Gagal mengambil harga terbaru.', 'error');
             } finally {
                 priceFetchInProgress = false;
@@ -400,18 +456,32 @@
         }
 
         function updatePriceCardsDisplay() {
-            document.getElementById('price-galeri24').innerText = 'Rp ' + (goldPrices.galeri24 || 0).toLocaleString('id-ID');
-            document.getElementById('price-antam').innerText = 'Rp ' + (goldPrices.antam || 0).toLocaleString('id-ID');
-            document.getElementById('price-ubs').innerText = 'Rp ' + (goldPrices.ubs || 0).toLocaleString('id-ID');
-            document.getElementById('price-lotus').innerText = 'Rp ' + (goldPrices.lotus || 0).toLocaleString('id-ID');
+            VENDOR_KEYS.forEach(key => {
+                const v = vendorCatalog[key];
+                const priceEl = document.getElementById(`price-${key}`);
+                const unitEl = document.getElementById(`unit-${key}`);
+                if (!priceEl || !unitEl) return;
+
+                if (v && v.items.length > 0 && validPrice(v.referencePrice)) {
+                    priceEl.innerText = 'Rp ' + v.referencePrice.toLocaleString('id-ID');
+                    const baseUnit = v.referenceWeight === 1 ? 'per gram' : `per ${formatGram(v.referenceWeight)}`;
+                    unitEl.innerText = v.stale ? `${baseUnit} • Data lama` : baseUnit;
+                    unitEl.className = v.stale ? 'text-[11px] text-amber-600 font-semibold' : 'text-[11px] text-slate-500';
+                } else if (!hasAttemptedInitialSync) {
+                    priceEl.innerText = 'Memuat...';
+                    unitEl.innerText = 'per gram';
+                    unitEl.className = 'text-[11px] text-slate-500';
+                } else {
+                    priceEl.innerText = 'Belum tersedia';
+                    unitEl.innerText = 'Tidak tersedia di sumber';
+                    unitEl.className = 'text-[11px] text-rose-500';
+                }
+            });
         }
 
         function selectVendor(vendorKey) {
             currentActiveVendor = vendorKey;
-            let currentVendorName = vendorKey.toUpperCase();
-            if(vendorKey === 'galeri24') currentVendorName = 'GALERI 24';
-            if(vendorKey === 'ubs') currentVendorName = 'UBS GOLD';
-            if(vendorKey === 'lotus') currentVendorName = 'LOTUS ARCHI';
+            const currentVendorName = getVendorDisplayName(vendorKey);
 
             document.querySelectorAll('.vendor-card').forEach(card => {
                 card.classList.remove('border-emerald-600', 'shadow-md');
@@ -450,11 +520,11 @@
             });
 
             if (isChecked) {
-                badge.innerText = "Suku Bunga Khusus Terbuka";
+                badge.innerText = "Margin Khusus Terbuka";
                 badge.classList.remove('bg-emerald-100', 'text-emerald-800');
                 badge.classList.add('bg-emerald-200', 'text-emerald-900');
             } else {
-                badge.innerText = "Bunga Standar";
+                badge.innerText = "Margin Standar";
                 badge.classList.remove('bg-emerald-200', 'text-emerald-900');
                 badge.classList.add('bg-emerald-100', 'text-emerald-800');
                 if (selectedInterest !== 0.92) setInterest(0.92);
@@ -495,26 +565,44 @@
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
 
-            const currentGoldPrice = goldPrices[currentActiveVendor] || 0;
-
-            gramList.forEach((gram, index) => {
-                let activeRowInterest = selectedInterest;
-                if (selectedInterest !== 0.92 && !isMin100gChecked && gram < 100) {
-                    activeRowInterest = 0.92;
+            const vendorData = vendorCatalog[currentActiveVendor] || { items: [], stale: false };
+            const items = vendorData.items || [];
+            const vendorNoteEl = document.getElementById('lbl-vendor-note');
+            if (vendorNoteEl) {
+                if (items.length > 0) {
+                    vendorNoteEl.innerText = vendorData.stale
+                        ? ` | ${items.length} gramasi (data terakhir)`
+                        : ` | ${items.length} gramasi`;
+                    vendorNoteEl.className = vendorData.stale ? 'text-amber-600 font-semibold' : 'text-slate-400';
+                } else {
+                    vendorNoteEl.innerText = '';
                 }
+            }
 
-                const totalPrice = gram * currentGoldPrice;
+            if (items.length === 0) {
+                const emptyMsg = !hasAttemptedInitialSync
+                    ? 'Memuat daftar gramasi dan harga jual dari Galeri 24...'
+                    : `Data gramasi ${getVendorDisplayName(currentActiveVendor)} belum tersedia. Klik "Perbarui sekarang".`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-xs text-slate-500">${emptyMsg}</td></tr>`;
+                return;
+            }
+
+            const activeRowInterest = getActiveInterestRate();
+
+            items.forEach((item, index) => {
+                const gram = item.weight;
+                const totalPrice = item.price;
                 const dpPure = totalPrice * (selectedDpPercent / 100);
                 const downPaymentTotal = dpPure + 50000;
                 const loanAmount = totalPrice - dpPure;
-                
+
                 let tenorCells = '';
                 tenorList.forEach((tenor, tIdx) => {
                     const principalPerMonth = loanAmount / tenor;
                     const interestPerMonth = loanAmount * (activeRowInterest / 100);
                     const monthlyInstallment = principalPerMonth + interestPerMonth;
                     const isLast = tIdx === tenorList.length - 1;
-                    
+
                     tenorCells += `<td class="p-2 font-semibold text-slate-800 whitespace-nowrap ${isLast ? 'text-right text-emerald-800 font-bold' : ''}">Rp ${Math.round(monthlyInstallment).toLocaleString('id-ID')}</td>`;
                 });
 
@@ -522,7 +610,7 @@
 
                 const row = `
                     <tr class="${rowBg} hover:bg-emerald-50/60 transition-colors">
-                        <td class="p-2 font-bold text-slate-900 whitespace-nowrap">${gram}g</td>
+                        <td class="p-2 font-bold text-slate-900 whitespace-nowrap">${formatGram(gram)}</td>
                         <td class="p-2 font-medium whitespace-nowrap">Rp ${Math.round(totalPrice).toLocaleString('id-ID')}</td>
                         <td class="p-2 text-slate-600 whitespace-nowrap">Rp ${Math.round(downPaymentTotal).toLocaleString('id-ID')}</td>
                         <td class="p-2 font-bold text-emerald-800 whitespace-nowrap">Rp ${Math.round(loanAmount).toLocaleString('id-ID')}</td>
@@ -543,15 +631,12 @@
         function prepareExportData() {
             const name = document.getElementById('cust-name').value || 'Tamu / Umum';
             const phone = document.getElementById('cust-phone').value || '-';
-            let vendorDisplay = currentActiveVendor.toUpperCase();
-            if(currentActiveVendor === 'galeri24') vendorDisplay = 'GALERI 24';
-            if(currentActiveVendor === 'ubs') vendorDisplay = 'UBS GOLD';
-            if(currentActiveVendor === 'lotus') vendorDisplay = 'LOTUS ARCHI';
-            
+            const vendorDisplay = getVendorDisplayName(currentActiveVendor);
+
             document.getElementById('pdf-name').innerText = name;
             document.getElementById('pdf-phone').innerText = phone;
             document.getElementById('pdf-vendor').innerText = vendorDisplay;
-            
+
             const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             document.querySelectorAll('.export-date-val').forEach(el => el.innerText = todayStr);
 
@@ -564,6 +649,12 @@
 
         // Export PDF
         function downloadPDF() {
+            const items = vendorCatalog[currentActiveVendor]?.items || [];
+            if (!items.length) {
+                alert('Data gramasi vendor belum tersedia untuk diekspor.');
+                return;
+            }
+
             prepareExportData();
             const originalTitle = document.title;
             const fileName = getSalesFilename();
@@ -578,6 +669,12 @@
 
         // Export JPG aman dari CORS Tainted Canvas
         function downloadJPG() {
+            const items = vendorCatalog[currentActiveVendor]?.items || [];
+            if (!items.length) {
+                alert('Data gramasi vendor belum tersedia untuk diekspor.');
+                return;
+            }
+
             prepareExportData();
             const btnJpg = document.getElementById('btn-export-jpg');
             const originalText = btnJpg.innerHTML;
@@ -588,11 +685,11 @@
                 try {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    
-                    const width = 1260;
-                    const rowCount = gramList.length;
-                    const height = 330 + (rowCount * 32); 
-                    
+
+                    const width = 1400;
+                    const rowCount = items.length;
+                    const height = 330 + (rowCount * 32);
+
                     canvas.width = width;
                     canvas.height = height;
 
@@ -614,16 +711,12 @@
                     ctx.fillText('LEMBAR SIMULASI PEMBIAYAAN EMAS', 40, 62);
 
                     // Info Tanggal & Vendor
-                    let vendorDisplay = currentActiveVendor.toUpperCase();
-                    if(currentActiveVendor === 'galeri24') vendorDisplay = 'GALERI 24';
-                    if(currentActiveVendor === 'ubs') vendorDisplay = 'UBS GOLD';
-                    if(currentActiveVendor === 'lotus') vendorDisplay = 'LOTUS ARCHI';
-
+                    const vendorDisplay = getVendorDisplayName(currentActiveVendor);
                     const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                     ctx.fillStyle = '#e2e8f0';
                     ctx.font = '12px sans-serif';
-                    ctx.fillText(`Diterbitkan: ${todayStr}`, width - 280, 38);
-                    ctx.fillText(`Vendor: ${vendorDisplay}`, width - 280, 60);
+                    ctx.fillText(`Diterbitkan: ${todayStr}`, width - 300, 38);
+                    ctx.fillText(`Vendor: ${vendorDisplay}`, width - 300, 60);
 
                     // Box Data Sales
                     ctx.fillStyle = '#f0fdf4';
@@ -633,12 +726,13 @@
 
                     const name = document.getElementById('cust-name').value || 'Tamu / Umum';
                     const phone = document.getElementById('cust-phone').value || '-';
+                    const activeRowInterest = getActiveInterestRate();
 
                     ctx.fillStyle = '#334155';
                     ctx.font = 'bold 13px sans-serif';
                     ctx.fillText(`Nama Sales: ${name}`, 60, 135);
-                    ctx.fillText(`No. WhatsApp / HP: ${phone}`, 450, 135);
-                    ctx.fillText(`Bunga Aktif: ${selectedInterest}%`, 900, 135);
+                    ctx.fillText(`No. WhatsApp / HP: ${phone}`, 500, 135);
+                    ctx.fillText(`Margin Aktif: ${activeRowInterest}%`, 1020, 135);
 
                     // Header Tabel
                     const tableTop = 175;
@@ -647,27 +741,25 @@
 
                     ctx.fillStyle = '#ffffff';
                     ctx.font = 'bold 11px sans-serif';
-                    
+
                     const cols = [
-                        { label: 'Berat', x: 55 },
-                        { label: 'Harga Dasar', x: 125 },
-                        { label: `DP (${selectedDpPercent}% + Admin)`, x: 265 },
-                        { label: 'Pinjaman', x: 440 },
-                        { label: '12 Bln', x: 570 },
-                        { label: '18 Bln', x: 690 },
-                        { label: '24 Bln', x: 810 },
-                        { label: '30 Bln', x: 930 },
-                        { label: '36 Bln', x: 1050 }
+                        { label: 'Berat', x: 56 },
+                        { label: 'Harga Dasar', x: 130 },
+                        { label: `DP (${selectedDpPercent}% + Admin)`, x: 310 },
+                        { label: 'Pinjaman', x: 490 },
+                        { label: '12 Bln', x: 670 },
+                        { label: '18 Bln', x: 805 },
+                        { label: '24 Bln', x: 940 },
+                        { label: '30 Bln', x: 1075 },
+                        { label: '36 Bln', x: 1210 }
                     ];
 
                     cols.forEach(col => ctx.fillText(col.label, col.x, tableTop + 22));
 
                     // Isi Baris Tabel
-                    const currentGoldPrice = goldPrices[currentActiveVendor] || 0;
-
-                    gramList.forEach((gram, index) => {
+                    items.forEach((item, index) => {
                         const y = tableTop + 35 + (index * 32);
-                        
+
                         ctx.fillStyle = index % 2 === 0 ? '#ffffff' : '#f8fafc';
                         ctx.fillRect(40, y, width - 80, 32);
 
@@ -677,12 +769,8 @@
                         ctx.lineTo(width - 40, y + 32);
                         ctx.stroke();
 
-                        let activeRowInterest = selectedInterest;
-                        if (selectedInterest !== 0.92 && !isMin100gChecked && gram < 100) {
-                            activeRowInterest = 0.92;
-                        }
-
-                        const totalPrice = gram * currentGoldPrice;
+                        const gram = item.weight;
+                        const totalPrice = item.price;
                         const dpPure = totalPrice * (selectedDpPercent / 100);
                         const downPaymentTotal = dpPure + 50000;
                         const loanAmount = totalPrice - dpPure;
@@ -690,10 +778,10 @@
                         ctx.fillStyle = '#0f172a';
                         ctx.font = '11px sans-serif';
 
-                        ctx.fillText(`${gram}g`, cols[0].x, y + 20);
+                        ctx.fillText(formatGram(gram), cols[0].x, y + 20);
                         ctx.fillText(`Rp ${Math.round(totalPrice).toLocaleString('id-ID')}`, cols[1].x, y + 20);
                         ctx.fillText(`Rp ${Math.round(downPaymentTotal).toLocaleString('id-ID')}`, cols[2].x, y + 20);
-                        
+
                         ctx.fillStyle = '#005a36';
                         ctx.font = 'bold 11px sans-serif';
                         ctx.fillText(`Rp ${Math.round(loanAmount).toLocaleString('id-ID')}`, cols[3].x, y + 20);
@@ -711,11 +799,13 @@
                     });
 
                     // Footnote
-                    const footerY = tableTop + 35 + (gramList.length * 32) + 25;
+                    const footerY = tableTop + 35 + (items.length * 32) + 25;
                     ctx.fillStyle = '#94a3b8';
                     ctx.font = '10px sans-serif';
                     ctx.fillText('* DP sudah termasuk biaya admin Rp 50.000. Kolom Pinjaman = Harga Dasar - DP Murni.', 40, footerY);
-                    ctx.fillText('PT Pegadaian Kanwil X Bandung • Mengatasi Masalah Tanpa Masalah', width - 360, footerY);
+                    ctx.textAlign = 'right';
+                    ctx.fillText('PT Pegadaian Kanwil X Bandung • Mengatasi Masalah Tanpa Masalah', width - 40, footerY);
+                    ctx.textAlign = 'left';
 
                     // Unduh File JPG
                     const fileName = getSalesFilename();
